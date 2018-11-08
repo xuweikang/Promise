@@ -106,7 +106,27 @@ co模块是著名程序员 TJ Holowaychuk 于 2013 年 6 月发布的一个小�
         console.log(data)
     })
       
-co模块可以让你不用编写Generator函数的执行器。Generator函数只要传入co函数，就会自动执行。co函数返回一个Promise对象，因此可以用then方法添加回调函数。      
+co模块可以让你不用编写Generator函数的执行器。Generator函数只要传入co函数，就会自动执行。co函数返回一个Promise对象，因此可以用then方法添加回调函数。 <br/>
+自己实现一个简答的co模块，如下：
+<pre><code>
+function co(generator){
+   var g = generator()
+   function next(data){
+        var res = g.next(data)
+        if(res.done) return
+        if(res.value instanceof Promise){
+            res.value.then(function(val){
+                next(val)
+            }).catch(functin(err){
+                next(err)
+            })
+        }else{
+            next()
+        }
+   }
+   next()
+}
+</code></pre>
   
   
 ## async/await
